@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   SafeAreaView,
   View,
@@ -11,6 +11,9 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native'
+
+import { shallow } from 'zustand/shallow'
+import { useStore } from '../hooks/useStore'
 
 // import { useNavigation } from '@react-navigation/native'
 // import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -26,8 +29,17 @@ const HomeScreen = () => {
   //   useNavigation<NativeStackNavigationProp<RootStackParamList>>()
 
   const [isScanning, setIsScanning] = useState(false)
-  const peripherals = useMemo(() => new Map<string, any>(), [])
-  const [list, setList] = useState<any[]>([])
+  // const peripherals = useMemo(() => new Map<string, any>(), [])
+  // const [list, setList] = useState<any[]>([])
+
+  const [peripherals, updatePeripherals] = useStore(
+    state => [state.peripherals, state.updatePeripherals],
+    shallow
+  )
+  const [list, setList] = useStore(
+    state => [state.list, state.setList],
+    shallow
+  )
 
   const startScan = () => {
     if (!isScanning) {
@@ -192,7 +204,7 @@ const HomeScreen = () => {
         'BleManagerDidUpdateValueForCharacteristic'
       )
     }
-  }, [peripherals])
+  }, [peripherals, setList])
 
   return (
     <>

@@ -1,23 +1,17 @@
-import { View, Text, Pressable, Animated } from 'react-native'
-import React, { useRef } from 'react'
+import { View, Text, Pressable, Animated, TextInput } from 'react-native'
+import React, { useRef, useState } from 'react'
 import { InformationCircleIcon } from 'react-native-heroicons/outline'
-import { RootStackParamList } from '../types'
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { useNavigation } from '@react-navigation/native'
+import PeripheralModal from './PeripheralModal'
 
 const PeripheralCard = ({
-  name,
-  id,
-  rssi,
-  connected,
+  item,
+  children,
 }: {
-  name: string
-  id: string
-  rssi: string
-  connected: boolean
+  item: any
+  children?: React.ReactNode
 }) => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>()
+  const [modalVisible, setModalVisible] = useState(false)
+  const [TextInputValueModal, onChangeTextInputModal] = useState('')
 
   const animatedOpacity = useRef(new Animated.Value(0)).current
   const animatedScale = useRef(new Animated.Value(0.6)).current
@@ -56,25 +50,27 @@ const PeripheralCard = ({
     <View className="flex-row items-center justify-between p-4 border-b border-gray-200">
       <Text className="text-neutral-600 font-satoshi">
         <Text className="text-base font-bold text-neutral-700 font-satoshi">
-          {name}
+          {item.name}
         </Text>
         {'\n'}
-        {id}
+        {item.id}
         {'\n'}
-        RSSI: {rssi} {'   '}
-        Connected: {connected ? 'true' : 'false'}
+        RSSI: {item.rssi} {'   '}
+        Connected: {item.connected ? 'true' : 'false'}
+        {'\n'}
+        Connectable: {item.advertising.isConnectable ? 'true' : 'false'}
       </Text>
-
       <Pressable
         onPressIn={fadeIn}
         onPressOut={fadeOut}
-        onPress={() =>
-          navigation.navigate('Peripheral', {
-            name: name,
-            peripheralId: id,
-            rssi: rssi,
-            connected: connected,
-          })
+        onPress={
+          () => setModalVisible(true)
+          // navigation.navigate('Peripheral', {
+          //   name: name,
+          //   peripheralId: id,
+          //   rssi: rssi,
+          //   connected: connected,
+          // })
         }
         className="relative items-center justify-center"
       >
@@ -91,6 +87,21 @@ const PeripheralCard = ({
           </View>
         </View>
       </Pressable>
+      <PeripheralModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        item={item}
+      >
+        {children}
+        <TextInput
+          editable
+          multiline
+          numberOfLines={4}
+          maxLength={40}
+          onChangeText={text => onChangeTextInputModal(text)}
+          value={TextInputValueModal}
+        />
+      </PeripheralModal>
     </View>
   )
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import {
   SafeAreaView,
   View,
@@ -12,8 +12,8 @@ import {
   TouchableOpacity,
 } from 'react-native'
 
-import { shallow } from 'zustand/shallow'
-import { useStore } from '../hooks/useStore'
+// import { shallow } from 'zustand/shallow'
+// import { useStore } from '../hooks/useStore'
 
 // import { useNavigation } from '@react-navigation/native'
 // import { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -28,18 +28,23 @@ const HomeScreen = () => {
   // const navigation =
   //   useNavigation<NativeStackNavigationProp<RootStackParamList>>()
 
-  const [isScanning, setIsScanning] = useState(false)
-  // const peripherals = useMemo(() => new Map<string, any>(), [])
-  // const [list, setList] = useState<any[]>([])
+  //States and variables for Modal
 
-  const [peripherals, updatePeripherals] = useStore(
-    state => [state.peripherals, state.updatePeripherals],
-    shallow
-  )
-  const [list, setList] = useStore(
-    state => [state.list, state.setList],
-    shallow
-  )
+  const [isConnecting, setisConnecting] = useState(false)
+
+  //States and variables for BLE manager
+  const [isScanning, setIsScanning] = useState(false)
+  const peripherals = useMemo(() => new Map<string, any>(), [])
+  const [list, setList] = useState<any[]>([])
+
+  // const [peripherals, updatePeripherals] = useStore(
+  //   state => [state.peripherals, state.updatePeripherals],
+  //   shallow
+  // )
+  // const [list, setList] = useStore(
+  //   state => [state.list, state.setList],
+  //   shallow
+  // )
 
   const startScan = () => {
     if (!isScanning) {
@@ -77,6 +82,7 @@ const HomeScreen = () => {
         BleManager.disconnect(peripheral.id)
       } else {
         console.log('Connecting')
+        setisConnecting(true)
         BleManager.connect(peripheral.id)
           .then(() => {
             let p = peripherals.get(peripheral.id)
@@ -105,8 +111,10 @@ const HomeScreen = () => {
                 }
               )
             }, 900)
+            setisConnecting(false)
           })
           .catch((err: any) => {
+            setisConnecting(false)
             console.log('Error while connecting', err)
           })
       }
@@ -225,12 +233,25 @@ const HomeScreen = () => {
               }}
               className="px-4 bg-gray-50"
             >
-              <PeripheralCard
-                name={item.name}
-                id={item.id}
-                rssi={item.rssi}
-                connected={item.connected}
-              />
+              <PeripheralCard item={item}>
+                {/* Modal children */}
+                {/* Connect Button */}
+                <TouchableOpacity
+                  className="items-center justify-center w-[144px] px-3 py-2 bg-teal-400 rounded-lg"
+                  onPress={() => {
+                    testPeripheral(item)
+                  }}
+                >
+                  <Text className="text-base font-medium tracking-wide text-white font-switzer">
+                    {isConnecting
+                      ? 'Connecting'
+                      : !item.connected
+                      ? 'Connect'
+                      : 'Disconnect'}
+                  </Text>
+                </TouchableOpacity>
+                {/* Input */}
+              </PeripheralCard>
             </TouchableOpacity>
           )}
         />

@@ -1,6 +1,5 @@
-import { View, Text, Modal, TouchableOpacity } from 'react-native'
+import { View, Text, Modal, TouchableOpacity, ScrollView } from 'react-native'
 import React from 'react'
-import { ArrowLeftIcon } from 'react-native-heroicons/outline'
 
 const PeripheralModal = ({
   item,
@@ -23,15 +22,14 @@ const PeripheralModal = ({
       <View className="w-full h-full bg-white">
         <View className="relative">
           <TouchableOpacity
-            className="flex-row items-center justify-center gap-2 p-3 bg-gray-200"
+            className="flex-row items-center justify-center gap-2 p-3 bg-gray-300"
             onPress={() => setModalVisible(false)}
           >
             <Text className="text-base font-bold text-neutral-700 font-switzer">
               Close
             </Text>
-            <ArrowLeftIcon size={32} color="#14b8a6" />
           </TouchableOpacity>
-          <View className="gap-4 p-2">
+          <ScrollView className="gap-4 p-2">
             <View>
               <Text className="text-neutral-600 font-satoshi">
                 <Text className="text-base font-bold text-neutral-700 font-satoshi">
@@ -47,7 +45,7 @@ const PeripheralModal = ({
               </Text>
             </View>
             <View>{children}</View>
-          </View>
+          </ScrollView>
         </View>
       </View>
     </Modal>

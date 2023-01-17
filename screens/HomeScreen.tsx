@@ -18,9 +18,9 @@ import {
 // import { useNavigation } from '@react-navigation/native'
 // import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 // import { RootStackParamList } from '../types'
+import PeripheralCard from '../components/PeripheralCard'
 
 import BleManager from 'react-native-ble-manager'
-import PeripheralCard from '../components/PeripheralCard'
 const BleManagerModule = NativeModules.BleManager
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule)
 
@@ -48,7 +48,7 @@ const HomeScreen = () => {
 
   const startScan = () => {
     if (!isScanning) {
-      BleManager.scan([], 10, true)
+      BleManager.scan([], 5, true)
         .then((results: any) => {
           console.log('Scanning...')
           setIsScanning(true)
@@ -237,12 +237,26 @@ const HomeScreen = () => {
                 {/* Modal children */}
                 {/* Connect Button */}
                 <TouchableOpacity
-                  className="items-center justify-center w-[144px] px-3 py-2 bg-teal-400 rounded-lg"
+                  className={`items-center justify-center w-[144px] px-3 py-2 ${
+                    isConnecting
+                      ? 'Connecting'
+                      : !item.connected
+                      ? 'bg-teal-400'
+                      : 'bg-white border-2 border-teal-400'
+                  } rounded-lg`}
                   onPress={() => {
                     testPeripheral(item)
                   }}
                 >
-                  <Text className="text-base font-medium tracking-wide text-white font-switzer">
+                  <Text
+                    className={`text-base font-medium tracking-wide ${
+                      isConnecting
+                        ? 'Connecting'
+                        : !item.connected
+                        ? 'text-white'
+                        : 'text-teal-500'
+                    }  font-switzer`}
+                  >
                     {isConnecting
                       ? 'Connecting'
                       : !item.connected
@@ -250,7 +264,6 @@ const HomeScreen = () => {
                       : 'Disconnect'}
                   </Text>
                 </TouchableOpacity>
-                {/* Input */}
               </PeripheralCard>
             </TouchableOpacity>
           )}

@@ -13,12 +13,7 @@ const PeripheralModal = ({
   setModalVisible: any
 }) => {
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      onShow={() => console.log('Modal opened')}
-      visible={modalVisible}
-    >
+    <Modal animationType="slide" transparent={true} visible={modalVisible}>
       <View className="w-full h-full bg-white">
         <View className="relative">
           <TouchableOpacity

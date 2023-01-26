@@ -37,6 +37,8 @@ const HomeScreen = () => {
   const peripherals = useMemo(() => new Map<string, any>(), [])
   const [list, setList] = useState<any[]>([])
 
+  const [peripheralData, setperipheralData] = useState(null)
+
   // const [peripherals, updatePeripherals] = useStore(
   //   state => [state.peripherals, state.updatePeripherals],
   //   shallow
@@ -98,6 +100,7 @@ const HomeScreen = () => {
               BleManager.retrieveServices(peripheral.id).then(
                 (peripheralData: any) => {
                   console.log('Retrieved peripheral services', peripheralData)
+                  setperipheralData(peripheralData)
 
                   BleManager.readRSSI(peripheral.id).then((rssi: any) => {
                     console.log('Retrieved actual RSSI value', rssi)
@@ -233,13 +236,13 @@ const HomeScreen = () => {
               }}
               className="px-4 bg-gray-50"
             >
-              <PeripheralCard item={item}>
+              <PeripheralCard item={item} peripheral={peripheralData}>
                 {/* Modal children */}
                 {/* Connect Button */}
                 <TouchableOpacity
                   className={`items-center justify-center w-[144px] px-3 py-2 ${
                     isConnecting
-                      ? 'Connecting'
+                      ? 'bg-teal-400'
                       : !item.connected
                       ? 'bg-teal-400'
                       : 'bg-white border-2 border-teal-400'
@@ -251,7 +254,7 @@ const HomeScreen = () => {
                   <Text
                     className={`text-base font-medium tracking-wide ${
                       isConnecting
-                        ? 'Connecting'
+                        ? 'text-white'
                         : !item.connected
                         ? 'text-white'
                         : 'text-teal-500'

@@ -1,4 +1,11 @@
-import { View, Text, Pressable, Animated, TextInput } from 'react-native'
+import {
+  View,
+  Text,
+  Pressable,
+  Animated,
+  TextInput,
+  KeyboardAvoidingView,
+} from 'react-native'
 import React, { useRef, useState } from 'react'
 import { InformationCircleIcon } from 'react-native-heroicons/outline'
 import PeripheralModal from './PeripheralModal'
@@ -7,16 +14,29 @@ import BleManager from 'react-native-ble-manager'
 
 const PeripheralCard = ({
   item,
+  peripheral,
   children,
 }: {
   item: any
+  peripheral: any
   children?: React.ReactNode
 }) => {
   const [modalVisible, setModalVisible] = useState(false)
   const [TextInputValueModal, onChangeTextInputModal] = useState('')
+  const [TextOutputValueModal, onChangeTextOutputModal] = useState('')
 
   const animatedOpacity = useRef(new Animated.Value(0)).current
   const animatedScale = useRef(new Animated.Value(0.6)).current
+
+  // let utf8Encode = new TextEncoder()
+
+  function utf8Encode(str: string) {
+    var bytes = []
+    for (var i = 0; i < str.length; ++i) {
+      bytes.push(str.charCodeAt(i))
+    }
+    return bytes
+  }
 
   const fadeIn = () => {
     Animated.parallel([
@@ -48,9 +68,48 @@ const PeripheralCard = ({
     ]).start()
   }
 
-  React.useEffect(() => {
-    BleManager.retrieveServices(item.id)
-  }, [item])
+  // const recieveData = () => {
+  //   BleManager.retrieveServices(peripheral.id)
+  //     .then(() => {
+  //       BleManager.startNotification(peripheral.id, service, characteristic)
+  //     })
+  //     .then(() => {
+  //       BleManager.read(peripheral.id, service, characteristic)
+  //     })
+  //     .then(readData => {
+  //       // Success code
+  //       console.log('Read: ' + readData)
+
+  //       // const buffer = Buffer.Buffer.from(readData) //https://github.com/feross/buffer#convert-arraybuffer-to-buffer
+  //       // const sensorData = buffer.readUInt8(1, true)
+  //     })
+  //     .catch(error => {
+  //       console.log(`Error writing ${characteristic}: ${error}`)
+  //     })
+  // }
+
+  const sendData = () => {
+    const data = utf8Encode(TextInputValueModal) // convert data to bytes
+    const service = 'fff0'
+    const characteristic = 'fff1'
+    BleManager.retrieveServices(peripheral.id)
+      .then(() => {
+        BleManager.startNotification(peripheral.id, service, characteristic)
+      })
+      .then(() => {
+        BleManager.writeWithoutResponse(
+          peripheral.id,
+          service,
+          characteristic,
+          data
+        )
+        console.log(`Sent: ${data}`)
+      })
+      .catch(error => {
+        console.log(`Error writing ${characteristic}: ${error}`)
+      })
+    // recieveData()
+  }
 
   return (
     <View className="flex-row items-center justify-between p-4 border-b border-gray-200">
@@ -104,20 +163,23 @@ const PeripheralCard = ({
             <Text className="text-base font-bold text-neutral-700 font-switzer">
               Input
             </Text>
-            <TextInput
-              selectionColor={'#14b8a6'}
-              blurOnSubmit
-              editable
-              multiline
-              numberOfLines={1}
-              maxLength={40}
-              onChangeText={text => onChangeTextInputModal(text)}
-              value={TextInputValueModal}
-              className="bg-gray-100 "
-            />
+            <KeyboardAvoidingView>
+              <TextInput
+                selectionColor={'#14b8a6'}
+                blurOnSubmit
+                editable
+                multiline
+                numberOfLines={1}
+                maxLength={40}
+                onChangeText={text => onChangeTextInputModal(text)}
+                value={TextInputValueModal}
+                className="bg-gray-100 "
+              />
+            </KeyboardAvoidingView>
+
             <Pressable
               className="items-center self-end justify-center p-2 bg-teal-400 rounded-md w-36"
-              onPress={() => console.log('Command sent')}
+              onPress={sendData}
             >
               <Text className="text-base font-medium tracking-wide text-white">
                 Send
@@ -133,7 +195,7 @@ const PeripheralCard = ({
               multiline
               numberOfLines={1}
               maxLength={100}
-              value={TextInputValueModal}
+              value={TextOutputValueModal}
               className="bg-gray-100"
             />
           </View>

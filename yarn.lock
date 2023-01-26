@@ -1254,6 +1254,11 @@
   dependencies:
     "@babel/types" "^7.3.0"
 
+"@types/convert-string@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@types/convert-string/-/convert-string-0.1.1.tgz#547ae99697289a6481e85671848c2266b0a27554"
+  integrity sha512-lHktaDvzqj6MPnrPB089kaiCe0ZwELOcXEq6RhuqtrOHANB4k9Plbuzhpi35iecDpzbhNNoXNPDwQBDfXUQymQ==
+
 "@types/eslint-visitor-keys@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@types/eslint-visitor-keys/-/eslint-visitor-keys-1.0.0.tgz#1ee30d79544ca84d68d4b3cdb0af4f205663dd2d"
@@ -5202,6 +5207,11 @@ react-native-ble-manager@^8.6.0:
   version "8.6.0"
   resolved "https://registry.yarnpkg.com/react-native-ble-manager/-/react-native-ble-manager-8.6.0.tgz#052d0794c0ae0b049793f9e42918d34daee49dd0"
   integrity sha512-MA2dq/sL9A8kCmMcFqo85ZqPOxt6isgAwFQBJR+dei2ty+vuP0czzW/9Y+EavuKD9Qr09TOCONw/YX8HLIgC7Q==
+
+react-native-ble-plx@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/react-native-ble-plx/-/react-native-ble-plx-2.0.3.tgz#b0a746f33389dbf7fd7b158513330d487d5d0fbb"
+  integrity sha512-62LRDBPf/03K7sge+qq2ZuF8PWCGB782G+SBrpgNm5fA5Hs3FCY1ExTJZ1G0tB5ZhBPYEXcKRxPLuFegcDFrqA==
 
 react-native-codegen@^0.70.6:
   version "0.70.6"
